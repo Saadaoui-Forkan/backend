@@ -1,0 +1,61 @@
+Kitty.save() //save in database
+
+// Read or Post
+db.findOne({key: value}) //find one element from the db by key /*name, id, age.. */
+db.find() // find all
+
+db.find({
+    age: {
+        $gt: 1
+    }
+})  //find all element that age great than 1
+
+//Update or Put
+METHOD ONE:
+1- Choose that we want it Update
+exp:
+const id = "6463e2183ae44401bf49d623";
+const Katsu = await Cat.findOne({_id: id})
+2-Change the value
+exp:
+Katsu.age = 2; 
+3- Save in db
+await Katsu.save()
+
+METHOD TWO:
+const Katsu = await Cat.updateOne({_id: id},{age: 2})
+
+
+//create database
+const mongoose = require("mongoose")
+
+mongoose.connect('mongodb://localhost:27017/databaseName')
+    .then(
+        () => console.log("connected to db")
+    )
+    .catch(
+        (err) => console.log("error", err)
+    )
+
+module.exports = mongoose
+
+
+//create a module(User)
+const mongoose = require("mongoose")
+
+const User = mongoose.model("User", {
+    firstName: {
+        type: String
+    },
+    lastName: {
+        type: String
+    },
+    age: {
+        type: Number
+    }
+})
+
+module.exports = User;
+
+
+
