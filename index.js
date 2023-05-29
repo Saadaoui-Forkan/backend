@@ -65,5 +65,27 @@ app.get("/getById/:id", async(req,res) => {
     }
 })
 
+// Delete Method Using async await
+app.delete("/delete/:id", async(req,res) => {
+    try {
+        const id = req.params.id
+        deleted = await User.findOneAndDelete({_id: id})
+        res.send(deleted)
+    } catch (error) {
+        res.send(error)
+    }
+})
+
+// Update Method Using async await
+app.put("/update/:id", async(req,res) => {
+    try {
+        const id = req.params.id
+        const newUser = req.body
+        updated = await User.findOneAndUpdate({_id: id}, newUser)
+        res.send(updated)
+    } catch (error) {
+        res.send(error)
+    }
+})
 const PORT = 5000;
 app.listen(PORT, ()=> console.log(`Server Is Running On Port ${PORT}`))
