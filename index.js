@@ -87,5 +87,65 @@ app.put("/update/:id", async(req,res) => {
         res.send(error)
     }
 })
+
+// Product Model
+const Product = require("./models/product")
+
+// Post Method
+app.post("/create_product", async(req,res) => {
+    try {
+        data = req.body
+        const newProduct = new Product(data)
+        savedProduct = await newProduct.save()
+        res.status(200).send(savedProduct)
+    } catch (error) {
+        res.status(400).send(error)
+    }
+})
+
+// Get Method
+app.get("/products", async(req,res) => {
+    try {
+        const products = await User.find()
+        res.status(200).send(products)
+    } catch (error) {
+        res.status(400).send(error)
+    }
+})
+
+// Get By Id 
+app.get("/getProductById/:id", async(req,res) => {
+    try {
+        const my_id = req.params.id
+        const product = await Product.findById(my_id)
+        res.status(200).send(product)
+    } catch (error) {
+        res.status(400).send(error)
+    }
+})
+
+// Put Method
+app.put("/update_product/:id", async(req,res) => {
+    try {
+        const id = req.params.id
+        const product = req.body
+        updated = await Product.findOneAndUpdate({_id: id}, product)
+        res.status(200).send(updated)
+    } catch (error) {
+        res.status(400).send(error)
+    }
+})
+
+// Delete Method
+app.delete("/delete_product/:id", async(req,res) => {
+    try {
+        const id = req.params.id
+        deleted = await Product.findOneAndDelete({_id: id})
+        res.status(200).send(deleted)
+    } catch (error) {
+        res.status(400).send(error)
+    }
+})
+
 const PORT = 5000;
 app.listen(PORT, ()=> console.log(`Server Is Running On Port ${PORT}`))
