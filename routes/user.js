@@ -3,6 +3,9 @@ const express = require('express')
 const router = express.Router()
 const User = require("../models/users")
 
+const bcrypt = require("bcrypt")
+const jwt = require('jsonwebtoken')
+
 // Post: first method
 router.post("/add", (req,res) => {
     data = req.body
@@ -20,7 +23,49 @@ router.post("/add", (req,res) => {
         )
 })
 
+router.post("/register",(req,res) => {
+    data = req.body
+    newUser = new User(data)
+    salt =  bcrypt.genSaltSync(10)
+    cryptedPassword = bcrypt.hashSync(data.password, salt)
+    newUser.password = cryptedPassword
+    newUser.save()
+        .then(
+            (savedUser) => {
+                res.status(200).send(savedUser)
+            }
+        )
+        .catch(
+            (error) => {
+                res.status(400).send(error)
+            }
+        )
+})
+
+router.post('/login', async(req,res) => {
+    data = req.body
+    const user = await User.findOne({email: data.email})
+    if(!user){
+        res.status(404).send('invalid email or password')
+    } else{
+
+        validPass = bcrypt.compareSync(data.password, user.password)
+        if (!validPass) {
+            res.status(401).send('invalid email or password')
+        } else {
+            payload = {
+                _id: user._id,
+                email: user.email,
+                name: user.name
+            }
+            token = jwt.sign(payload, '123456')
+            res.status(200).send({mytoken: token})
+        }
+    }
+})
+
 // Post: second method
+
 router.post("/create", async(req,res) => {
     try {
         data = req.body
